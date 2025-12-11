@@ -28,6 +28,8 @@ interface LicenseCardProps {
 export const LicenseCard = ({ license, onUpdate, onDelete }: LicenseCardProps) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isAddUserDialogOpen, setIsAddUserDialogOpen] = useState(false);
+  const [showPasswords, setShowPasswords] = useState(false);
+  const [revealedUserId, setRevealedUserId] = useState<string | null>(null);
 
   const usagePercentage = (license.users.length / license.maxUsers) * 100;
   const availableSlots = license.maxUsers - license.users.length;
@@ -41,7 +43,7 @@ export const LicenseCard = ({ license, onUpdate, onDelete }: LicenseCardProps) =
   const getStatusBadge = () => {
     if (usagePercentage >= 100) return <Badge variant="destructive">Completa</Badge>;
     if (usagePercentage >= 80) return <Badge className="bg-warning text-warning-foreground">Quase cheia</Badge>;
-    return <Badge className="bg-accent text-accent-foreground">Disponível</Badge>;
+    return <Badge className="bg-green-100 text-green-800">Disponível</Badge>;
   };
 
   const addUser = async (user: Omit<User, "id">) => {
@@ -80,12 +82,24 @@ export const LicenseCard = ({ license, onUpdate, onDelete }: LicenseCardProps) =
                 <Mail className="h-3 w-3" />
                 {license.email}
               </p>
+              <div className="flex items-center gap-4">
+                <div className="text-xs text-muted-foreground font-mono flex items-center gap-2">
+                  <span>Senha: {showPasswords ? (license.activationPassword || '—') : (license.activationPassword ? '••••••••' : '—')}</span>
+                  <Button size="sm" variant="outline" onClick={async () => {
+                    const admin = window.prompt('Insira senha admin para visualizar as senhas:');
+                    if (admin === 'delta123@') {
+                      setShowPasswords(true);
+                      setTimeout(() => setShowPasswords(false), 10000);
+                    } else {
+                      toast.error('Senha admin incorreta');
+                    }
+                  }}>Ver</Button>
+                </div>
+              </div>
               <p className="text-xs text-muted-foreground font-mono">
-                E-mail de ativação: {license.activationEmail}
+                Senha padrão: {showPasswords ? (license.defaultPassword || '—') : (license.defaultPassword ? '••••••••' : '—')}
               </p>
-              <p className="text-xs text-muted-foreground font-mono">
-                Senha: {license.activationPassword ? '••••••••' : '—'}
-              </p>
+              
             </div>
             {getStatusBadge()}
           </div>
@@ -99,6 +113,11 @@ export const LicenseCard = ({ license, onUpdate, onDelete }: LicenseCardProps) =
               </span>
             </div>
             <Progress value={usagePercentage} className="h-2" />
+            <div className="mt-2">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-md bg-green-50 text-green-800 text-xs font-medium">
+                Disponível: {availableSlots} {availableSlots === 1 ? 'vaga' : 'vagas'}
+              </span>
+            </div>
           </div>
 
           <div className="space-y-2">
@@ -133,6 +152,19 @@ export const LicenseCard = ({ license, onUpdate, onDelete }: LicenseCardProps) =
                         <Mail className="h-3 w-3" />
                         {user.email}
                       </p>
+                      <div className="mt-1 text-xs text-muted-foreground flex items-center gap-3">
+                        <span>Senha: {revealedUserId === user.id ? (user.password || '—') : (user.password ? '••••••••' : '—')}</span>
+                        <span>Padrão: {revealedUserId === user.id ? (user.defaultPassword || '—') : (user.defaultPassword ? '••••••••' : '—')}</span>
+                        <Button size="xs" variant="outline" onClick={() => {
+                          const admin = window.prompt('Insira senha admin para visualizar as senhas:');
+                          if (admin === 'delta123@') {
+                            setRevealedUserId(user.id);
+                            setTimeout(() => setRevealedUserId(null), 10000);
+                          } else {
+                            toast.error('Senha admin incorreta');
+                          }
+                        }}>Ver</Button>
+                      </div>
                     </div>
                     <Button
                       size="sm"

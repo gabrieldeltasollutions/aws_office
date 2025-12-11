@@ -9,6 +9,8 @@ class User:
     id: str
     name: str
     email: str
+    password: str
+    defaultPassword: str
 
 @dataclass
 class License:
@@ -17,6 +19,7 @@ class License:
     email: str
     activationEmail: str
     activationPassword: str
+    defaultPassword: str
     users: List[User]
     maxUsers: int
     
@@ -27,7 +30,8 @@ class License:
             'email': self.email,
             'activationEmail': self.activationEmail,
             'activationPassword': self.activationPassword,
-            'users': [{'id': u.id, 'name': u.name, 'email': u.email} for u in self.users],
+            'defaultPassword': self.defaultPassword,
+            'users': [{'id': u.id, 'name': u.name, 'email': u.email, 'password': u.password, 'defaultPassword': u.defaultPassword} for u in self.users],
             'maxUsers': self.maxUsers
         }
 
@@ -61,6 +65,7 @@ class LicenseRepository:
             email=d['email'],
             activationEmail=d.get('activationEmail', ''),
             activationPassword=d.get('activationPassword', ''),
+            defaultPassword=d.get('defaultPassword', ''),
             users=users,
             maxUsers=d.get('maxUsers', 5)
         )
@@ -82,6 +87,7 @@ class LicenseRepository:
             email=license_data['email'],
             activationEmail=license_data.get('activationEmail', ''),
             activationPassword=license_data.get('activationPassword', ''),
+            defaultPassword=license_data.get('defaultPassword', ''),
             users=[],
             maxUsers=license_data.get('maxUsers', 5)
         )
@@ -98,6 +104,7 @@ class LicenseRepository:
         license.email = license_data.get('email', license.email)
         license.activationEmail = license_data.get('activationEmail', license.activationEmail)
         license.activationPassword = license_data.get('activationPassword', license.activationPassword)
+        license.defaultPassword = license_data.get('defaultPassword', license.defaultPassword)
         license.maxUsers = license_data.get('maxUsers', license.maxUsers)
         
         if 'users' in license_data:
@@ -127,7 +134,9 @@ class LicenseRepository:
         new_user = User(
             id=str(int(time.time() * 1000)),
             name=user_data['name'],
-            email=user_data['email']
+            email=user_data['email'],
+            password=user_data.get('password', ''),
+            defaultPassword=user_data.get('defaultPassword', '')
         )
         license.users.append(new_user)
         self._save_data()

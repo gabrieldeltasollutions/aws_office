@@ -4,6 +4,8 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  password: string;
+  defaultPassword: string;
 }
 
 export interface License {
@@ -12,6 +14,7 @@ export interface License {
   email: string;
   activationEmail: string;
   activationPassword: string;
+  defaultPassword: string;
   users: User[];
   maxUsers: number;
 }
