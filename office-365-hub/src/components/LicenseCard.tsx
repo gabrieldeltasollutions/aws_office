@@ -81,7 +81,10 @@ export const LicenseCard = ({ license, onUpdate, onDelete }: LicenseCardProps) =
                 {license.email}
               </p>
               <p className="text-xs text-muted-foreground font-mono">
-                Chave: {license.key}
+                E-mail de ativação: {license.activationEmail}
+              </p>
+              <p className="text-xs text-muted-foreground font-mono">
+                Senha: {license.activationPassword ? '••••••••' : '—'}
               </p>
             </div>
             {getStatusBadge()}

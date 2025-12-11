@@ -20,3 +20,4 @@ api_bp.add_url_rule('/stats', 'get_stats', controller.get_stats, methods=['GET']
 
 
 
+

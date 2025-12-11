@@ -21,23 +21,26 @@ interface AddLicenseDialogProps {
 export const AddLicenseDialog = ({ open, onOpenChange, onAdd }: AddLicenseDialogProps) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [key, setKey] = useState("");
+  const [activationEmail, setActivationEmail] = useState("");
+  const [activationPassword, setActivationPassword] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (name.trim() && email.trim() && key.trim()) {
+    if (name.trim() && email.trim() && activationEmail.trim() && activationPassword.trim()) {
       onAdd({
         name: name.trim(),
         email: email.trim(),
-        key: key.trim(),
+        activationEmail: activationEmail.trim(),
+        activationPassword: activationPassword.trim(),
         users: [],
         maxUsers: 5,
       });
       
       setName("");
       setEmail("");
-      setKey("");
+      setActivationEmail("");
+      setActivationPassword("");
       onOpenChange(false);
     }
   };
@@ -78,12 +81,25 @@ export const AddLicenseDialog = ({ open, onOpenChange, onAdd }: AddLicenseDialog
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="key">Chave da Licença</Label>
+              <Label htmlFor="activationEmail">E-mail de Ativação</Label>
               <Input
-                id="key"
-                placeholder="XXXXX-XXXXX-XXXXX-XXXXX"
-                value={key}
-                onChange={(e) => setKey(e.target.value)}
+                id="activationEmail"
+                type="email"
+                placeholder="ativacao@provedor.com"
+                value={activationEmail}
+                onChange={(e) => setActivationEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="activationPassword">Senha de Ativação</Label>
+              <Input
+                id="activationPassword"
+                type="password"
+                placeholder="Senha de ativação"
+                value={activationPassword}
+                onChange={(e) => setActivationPassword(e.target.value)}
                 required
               />
             </div>

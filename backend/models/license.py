@@ -15,7 +15,8 @@ class License:
     id: str
     name: str
     email: str
-    key: str
+    activationEmail: str
+    activationPassword: str
     users: List[User]
     maxUsers: int
     
@@ -24,7 +25,8 @@ class License:
             'id': self.id,
             'name': self.name,
             'email': self.email,
-            'key': self.key,
+            'activationEmail': self.activationEmail,
+            'activationPassword': self.activationPassword,
             'users': [{'id': u.id, 'name': u.name, 'email': u.email} for u in self.users],
             'maxUsers': self.maxUsers
         }
@@ -57,7 +59,8 @@ class LicenseRepository:
             id=d['id'],
             name=d['name'],
             email=d['email'],
-            key=d['key'],
+            activationEmail=d.get('activationEmail', ''),
+            activationPassword=d.get('activationPassword', ''),
             users=users,
             maxUsers=d.get('maxUsers', 5)
         )
@@ -77,7 +80,8 @@ class LicenseRepository:
             id=str(int(time.time() * 1000)),
             name=license_data['name'],
             email=license_data['email'],
-            key=license_data['key'],
+            activationEmail=license_data.get('activationEmail', ''),
+            activationPassword=license_data.get('activationPassword', ''),
             users=[],
             maxUsers=license_data.get('maxUsers', 5)
         )
@@ -92,7 +96,8 @@ class LicenseRepository:
         
         license.name = license_data.get('name', license.name)
         license.email = license_data.get('email', license.email)
-        license.key = license_data.get('key', license.key)
+        license.activationEmail = license_data.get('activationEmail', license.activationEmail)
+        license.activationPassword = license_data.get('activationPassword', license.activationPassword)
         license.maxUsers = license_data.get('maxUsers', license.maxUsers)
         
         if 'users' in license_data:
@@ -136,6 +141,7 @@ class LicenseRepository:
         license.users = [u for u in license.users if u.id != user_id]
         self._save_data()
         return license
+
 
 
 

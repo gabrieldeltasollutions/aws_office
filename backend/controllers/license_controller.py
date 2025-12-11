@@ -30,8 +30,8 @@ class LicenseController:
             data = request.get_json()
             
             # Validação
-            if not data or not all(k in data for k in ['name', 'email', 'key']):
-                return jsonify({'error': 'Dados incompletos. Requer: name, email, key'}), 400
+            if not data or not all(k in data for k in ['name', 'email', 'activationEmail', 'activationPassword']):
+                return jsonify({'error': 'Dados incompletos. Requer: name, email, activationEmail, activationPassword'}), 400
             
             license = self.repository.create(data)
             return jsonify(license.to_dict()), 201
@@ -107,6 +107,7 @@ class LicenseController:
             }), 200
         except Exception as e:
             return jsonify({'error': str(e)}), 500
+
 
 
 

@@ -10,7 +10,8 @@ export interface License {
   id: string;
   name: string;
   email: string;
-  key: string;
+  activationEmail: string;
+  activationPassword: string;
   users: User[];
   maxUsers: number;
 }
@@ -90,6 +91,7 @@ class ApiService {
 }
 
 export const apiService = new ApiService();
+
 
 
 
