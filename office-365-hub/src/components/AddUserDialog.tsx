@@ -27,24 +27,19 @@ export const AddUserDialog = ({
 }: AddUserDialogProps) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [defaultPassword, setDefaultPassword] = useState("");
+  
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (name.trim() && email.trim() && password.trim() && defaultPassword.trim()) {
+    if (name.trim() && email.trim()) {
       onAdd({
         name: name.trim(),
         email: email.trim(),
-        password: password.trim(),
-        defaultPassword: defaultPassword.trim(),
       });
-      
+
       setName("");
       setEmail("");
-      setPassword("");
-      setDefaultPassword("");
       onOpenChange(false);
     }
   };
@@ -84,29 +79,7 @@ export const AddUserDialog = ({
               />
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="user-password">Senha do usuário</Label>
-              <Input
-                id="user-password"
-                type="password"
-                placeholder="Senha do usuário"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="user-default-password">Senha padrão do usuário</Label>
-              <Input
-                id="user-default-password"
-                type="password"
-                placeholder="Senha padrão"
-                value={defaultPassword}
-                onChange={(e) => setDefaultPassword(e.target.value)}
-                required
-              />
-            </div>
+            {/* Senhas do usuário removidas do formulário de criação */}
           </div>
           
           <DialogFooter>
