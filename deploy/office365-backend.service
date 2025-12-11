@@ -1,0 +1,18 @@
+[Unit]
+Description=Office 365 Hub Backend API
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/office365-hub/backend
+Environment="PATH=/home/ubuntu/office365-hub/backend/venv/bin"
+ExecStart=/home/ubuntu/office365-hub/backend/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:5000 app:create_app
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+
+
+
