@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Users, Trash2, UserPlus, Mail, X, Edit } from "lucide-react";
+import { Users, Trash2, UserPlus, Mail, X, Edit, Edit2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { AddUserDialog } from "./AddUserDialog";
 import { EditUserDialog } from "./EditUserDialog";
+import { EditLicenseDialog } from "./EditLicenseDialog";
 import { License, User } from "@/pages/Index";
 import { apiService } from "@/services/api";
 import { toast } from "sonner";
@@ -30,6 +31,7 @@ export const LicenseCard = ({ license, onUpdate, onDelete }: LicenseCardProps) =
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isAddUserDialogOpen, setIsAddUserDialogOpen] = useState(false);
   const [isEditUserDialogOpen, setIsEditUserDialogOpen] = useState(false);
+  const [isEditLicenseDialogOpen, setIsEditLicenseDialogOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [showPasswords, setShowPasswords] = useState(false);
   const [revealedUserId, setRevealedUserId] = useState<string | null>(null);
@@ -94,13 +96,33 @@ export const LicenseCard = ({ license, onUpdate, onDelete }: LicenseCardProps) =
     }
   };
 
+  const editLicense = async (updatedLicense: License) => {
+    try {
+      const result = await apiService.updateLicense(license.id, updatedLicense);
+      onUpdate(license.id, result);
+      toast.success("Licença atualizada com sucesso!");
+    } catch (error) {
+      toast.error("Erro ao atualizar licença: " + (error instanceof Error ? error.message : "Erro desconhecido"));
+    }
+  };
+
   return (
     <>
       <Card className="shadow-card hover:shadow-card-hover transition-all">
         <CardHeader>
           <div className="flex items-start justify-between">
             <div className="space-y-1 flex-1">
-              <CardTitle className="text-lg">{license.name}</CardTitle>
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-lg">{license.name}</CardTitle>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setIsEditLicenseDialogOpen(true)}
+                  className="h-7 w-7 p-0"
+                >
+                  <Edit2 className="h-4 w-4 text-muted-foreground hover:text-blue-600" />
+                </Button>
+              </div>
               <p className="text-xs text-muted-foreground flex items-center gap-1.5">
                 <Mail className="h-3 w-3" />
                 {license.email}
@@ -263,6 +285,13 @@ export const LicenseCard = ({ license, onUpdate, onDelete }: LicenseCardProps) =
         onOpenChange={setIsEditUserDialogOpen}
         onEdit={editUser}
         user={editingUser}
+      />
+
+      <EditLicenseDialog
+        open={isEditLicenseDialogOpen}
+        onOpenChange={setIsEditLicenseDialogOpen}
+        onEdit={editLicense}
+        license={license}
       />
     </>
   );
