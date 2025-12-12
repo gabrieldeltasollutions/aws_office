@@ -26,20 +26,20 @@ export const AddUserDialog = ({
   availableSlots 
 }: AddUserDialogProps) => {
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  
+  const [emailPrefix, setEmailPrefix] = useState("");
+  const emailDomain = "@deltasollutions.com.br";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (name.trim() && email.trim()) {
+    if (name.trim() && emailPrefix.trim()) {
       onAdd({
         name: name.trim(),
-        email: email.trim(),
+        email: emailPrefix.trim() + emailDomain,
       });
 
       setName("");
-      setEmail("");
+      setEmailPrefix("");
       onOpenChange(false);
     }
   };
@@ -69,14 +69,20 @@ export const AddUserDialog = ({
             
             <div className="space-y-2">
               <Label htmlFor="user-email">Email Delta</Label>
-              <Input
-                id="user-email"
-                type="email"
-                placeholder="joao.silva@empresa.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+              <div className="flex items-center gap-1">
+                <Input
+                  id="user-email"
+                  type="text"
+                  placeholder="joao.silva"
+                  value={emailPrefix}
+                  onChange={(e) => setEmailPrefix(e.target.value)}
+                  required
+                  className="flex-1"
+                />
+                <span className="text-sm text-muted-foreground whitespace-nowrap">
+                  {emailDomain}
+                </span>
+              </div>
             </div>
             
             {/* Senhas do usuário removidas do formulário de criação */}
