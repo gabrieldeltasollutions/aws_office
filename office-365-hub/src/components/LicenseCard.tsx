@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Users, Trash2, UserPlus, Mail, X } from "lucide-react";
+import { Users, Trash2, UserPlus, Mail, X, Edit } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -15,6 +15,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { AddUserDialog } from "./AddUserDialog";
+import { EditUserDialog } from "./EditUserDialog";
 import { License, User } from "@/pages/Index";
 import { apiService } from "@/services/api";
 import { toast } from "sonner";
@@ -28,6 +29,8 @@ interface LicenseCardProps {
 export const LicenseCard = ({ license, onUpdate, onDelete }: LicenseCardProps) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isAddUserDialogOpen, setIsAddUserDialogOpen] = useState(false);
+  const [isEditUserDialogOpen, setIsEditUserDialogOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
   const [showPasswords, setShowPasswords] = useState(false);
   const [revealedUserId, setRevealedUserId] = useState<string | null>(null);
 
@@ -68,6 +71,26 @@ export const LicenseCard = ({ license, onUpdate, onDelete }: LicenseCardProps) =
       toast.success("Usuário removido com sucesso!");
     } catch (error) {
       toast.error("Erro ao remover usuário: " + (error instanceof Error ? error.message : "Erro desconhecido"));
+    }
+  };
+
+  const editUser = async (updatedUser: User) => {
+    try {
+      // Atualizar o array de usuários com o usuário editado
+      const updatedUsers = license.users.map(u => 
+        u.id === updatedUser.id ? updatedUser : u
+      );
+      
+      // Atualizar a licença completa no backend
+      const updatedLicense = await apiService.updateLicense(license.id, {
+        ...license,
+        users: updatedUsers
+      });
+      
+      onUpdate(license.id, updatedLicense);
+      toast.success("Usuário atualizado com sucesso!");
+    } catch (error) {
+      toast.error("Erro ao atualizar usuário: " + (error instanceof Error ? error.message : "Erro desconhecido"));
     }
   };
 
@@ -166,14 +189,25 @@ export const LicenseCard = ({ license, onUpdate, onDelete }: LicenseCardProps) =
                         }}>Ver</Button>
                       </div>
                     </div>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => removeUser(user.id)}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <X className="h-4 w-4 text-muted-foreground hover:text-destructive" />
-                    </Button>
+                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => {
+                          setEditingUser(user);
+                          setIsEditUserDialogOpen(true);
+                        }}
+                      >
+                        <Edit className="h-4 w-4 text-muted-foreground hover:text-blue-600" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => removeUser(user.id)}
+                      >
+                        <X className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+                      </Button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -222,6 +256,13 @@ export const LicenseCard = ({ license, onUpdate, onDelete }: LicenseCardProps) =
         onOpenChange={setIsAddUserDialogOpen}
         onAdd={addUser}
         availableSlots={availableSlots}
+      />
+
+      <EditUserDialog
+        open={isEditUserDialogOpen}
+        onOpenChange={setIsEditUserDialogOpen}
+        onEdit={editUser}
+        user={editingUser}
       />
     </>
   );
