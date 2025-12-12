@@ -53,9 +53,12 @@ const Index = () => {
 
   const updateLicense = async (licenseId: string, updatedLicense: License) => {
     try {
-      const updated = await apiService.updateLicense(licenseId, updatedLicense);
-      setLicenses(licenses.map(l => l.id === licenseId ? updated : l));
-      await loadData(); // Recarregar stats
+      // Atualiza o estado local com a licença já retornada pelas chamadas de add/remove user
+      setLicenses((prev) => prev.map((l) => (l.id === licenseId ? updatedLicense : l)));
+
+      // Recarrega apenas as estatísticas para atualizar os cards
+      const statsData = await apiService.getStats();
+      setStats(statsData);
     } catch (error) {
       toast.error("Erro ao atualizar licença: " + (error instanceof Error ? error.message : "Erro desconhecido"));
     }
