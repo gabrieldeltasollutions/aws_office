@@ -95,7 +95,7 @@ class LicenseController:
             licenses = self.repository.get_all()
             total_licenses = len(licenses)
             total_users = sum(len(l.users) for l in licenses)
-            total_slots = sum(l.maxUsers for l in licenses)
+            total_slots = sum(l.max_users for l in licenses)
             available_slots = total_slots - total_users
             usage_percentage = round((total_users / total_slots * 100) if total_slots > 0 else 0)
             
