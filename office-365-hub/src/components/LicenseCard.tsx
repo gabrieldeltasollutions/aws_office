@@ -132,7 +132,7 @@ export const LicenseCard = ({ license, onUpdate, onDelete }: LicenseCardProps) =
                   <span>Senha: {showPasswords ? (license.activationPassword || '—') : (license.activationPassword ? '••••••••' : '—')}</span>
                   <Button size="sm" variant="outline" onClick={async () => {
                     const admin = window.prompt('Insira senha admin para visualizar as senhas:');
-                    if (admin === 'delta123@') {
+                    if (admin === 'AZ09B1y8*D3lt@') {
                       setShowPasswords(true);
                       setTimeout(() => setShowPasswords(false), 10000);
                     } else {
@@ -202,7 +202,7 @@ export const LicenseCard = ({ license, onUpdate, onDelete }: LicenseCardProps) =
                         <span>Padrão: {revealedUserId === user.id ? (user.defaultPassword || '—') : (user.defaultPassword ? '••••••••' : '—')}</span>
                         <Button size="xs" variant="outline" onClick={() => {
                           const admin = window.prompt('Insira senha admin para visualizar as senhas:');
-                          if (admin === 'delta123@') {
+                          if (admin === 'AZ09B1y8*D3lt@') {
                             setRevealedUserId(user.id);
                             setTimeout(() => setRevealedUserId(null), 10000);
                           } else {
